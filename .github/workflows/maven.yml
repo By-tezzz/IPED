@@ -1,6 +1,10 @@
 name: Java CI
 
-on: [push]
+on:
+  push:
+  # allows starting a build by hand from the Actions tab, e.g. to run CI on a
+  # branch that was pushed before Actions was enabled on a fork
+  workflow_dispatch:
 
 jobs:
 
