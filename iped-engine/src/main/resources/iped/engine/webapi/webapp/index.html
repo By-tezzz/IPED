@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>IPED Web</title>
+    <link rel="icon" href="img/icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+
+<body>
+    <header class="topbar">
+        <div class="brand" title="IPED Digital Forensic Tool">IPED<span>web</span></div>
+
+        <form id="search-form" class="search" autocomplete="off">
+            <input id="query" type="search" name="q" placeholder="Search the case, e.g.  ext:jpg &amp;&amp; size:[100000 TO *]"
+                aria-label="Query">
+            <select id="source" aria-label="Source">
+                <option value="">All sources</option>
+            </select>
+            <button type="submit" class="primary">Search</button>
+        </form>
+
+        <div class="topbar-tools">
+            <div class="viewswitch" role="group" aria-label="Result view">
+                <button type="button" id="view-list" class="active" title="List view">List</button>
+                <button type="button" id="view-gallery" title="Gallery view">Gallery</button>
+            </div>
+            <button type="button" id="help-button" class="ghost" title="Query syntax help">?</button>
+        </div>
+    </header>
+
+    <main>
+        <aside class="sidebar" id="sidebar">
+            <section class="panel">
+                <h2>Case</h2>
+                <ul class="list" id="filters">
+                    <li><button type="button" class="entry active" data-filter="all">All items</button></li>
+                    <li><button type="button" class="entry" data-filter="selected">Checked items</button></li>
+                </ul>
+            </section>
+
+            <section class="panel">
+                <h2>Bookmarks
+                    <button type="button" id="new-bookmark" class="mini" title="Create bookmark">+</button>
+                </h2>
+                <ul class="list" id="bookmarks">
+                    <li class="empty">No bookmarks</li>
+                </ul>
+            </section>
+
+            <section class="panel grow">
+                <h2>Categories</h2>
+                <ul class="list" id="categories">
+                    <li class="empty">Loading&hellip;</li>
+                </ul>
+            </section>
+        </aside>
+
+        <section class="results" id="results">
+            <div class="results-bar">
+                <span id="hits" class="hits">No search yet</span>
+
+                <div class="bulk">
+                    <label class="check"><input type="checkbox" id="check-page"> Check page</label>
+                    <select id="bookmark-action" aria-label="Bookmark of checked items">
+                        <option value="">Bookmark&hellip;</option>
+                    </select>
+                    <button type="button" id="bookmark-add" class="mini" title="Add checked items to bookmark">Add</button>
+                    <button type="button" id="bookmark-remove" class="mini"
+                        title="Remove checked items from bookmark">Remove</button>
+                </div>
+
+                <div class="pager">
+                    <button type="button" id="prev" title="Previous page">&#8249;</button>
+                    <span id="page-info">0 - 0</span>
+                    <button type="button" id="next" title="Next page">&#8250;</button>
+                    <select id="rows" aria-label="Items per page">
+                        <option>25</option>
+                        <option selected>50</option>
+                        <option>100</option>
+                        <option>200</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="results-body" id="results-body">
+                <p class="placeholder">Type a query and press <kbd>Enter</kbd>, or pick a category to start.
+                    An empty query returns every item of the case.</p>
+            </div>
+        </section>
+
+        <aside class="details" id="details">
+            <div class="details-head">
+                <h2 id="details-title">No item selected</h2>
+                <button type="button" id="details-close" class="ghost" title="Close details">&times;</button>
+            </div>
+
+            <div class="details-actions" id="details-actions" hidden>
+                <label class="check"><input type="checkbox" id="details-check"> Checked</label>
+                <a id="details-download" class="button" download>Download</a>
+                <a id="details-open" class="button" target="_blank" rel="noopener">Open</a>
+            </div>
+
+            <div class="tabs" id="details-tabs" hidden>
+                <button type="button" class="tab active" data-tab="preview">Preview</button>
+                <button type="button" class="tab" data-tab="text">Text</button>
+                <button type="button" class="tab" data-tab="props">Properties</button>
+            </div>
+
+            <div class="details-body" id="details-body">
+                <p class="placeholder">Select an item to see its preview, extracted text and properties.</p>
+            </div>
+        </aside>
+    </main>
+
+    <dialog id="help-dialog">
+        <h2>Query syntax</h2>
+        <p>Queries use the Lucene syntax IPED uses in its desktop interface.</p>
+        <ul>
+            <li><code>bank statement</code> &mdash; items containing both words</li>
+            <li><code>"bank statement"</code> &mdash; exact phrase; also use quotes for anything with
+                <code>@</code>, <code>:</code> or <code>.</code>, such as an email address</li>
+            <li><code>name:photo*</code> &mdash; by property, wildcards allowed</li>
+            <li><code>ext:jpg</code> or <code>contentType:image/jpeg</code> &mdash; by file type</li>
+            <li><code>size:[100000 TO *]</code> &mdash; numeric range</li>
+            <li><code>modified:[2020-01-01 TO 2020-12-31]</code> &mdash; date range</li>
+            <li><code>category:"Image Files" &amp;&amp; deleted:true</code> &mdash; combined with <code>&amp;&amp;</code>,
+                <code>||</code>, <code>!</code></li>
+            <li><code>hash:d41d8cd98f00b204e9800998ecf8427e</code> &mdash; by hash</li>
+        </ul>
+        <p>Available properties are listed below, and the full REST API is documented at
+            <a href="../swagger.json" target="_blank" rel="noopener">/swagger.json</a>.</p>
+        <div class="fieldlist" id="field-list">Loading&hellip;</div>
+        <form method="dialog"><button class="primary">Close</button></form>
+    </dialog>
+
+    <div id="toast" class="toast" hidden></div>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>

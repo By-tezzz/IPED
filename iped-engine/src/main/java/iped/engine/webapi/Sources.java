@@ -45,13 +45,16 @@ public class Sources {
     public static Map<String, String> sourcePathToStringID;
 
     public static void init(String urlToAskSources) throws IOException, ParseException {
+        init(askSources(urlToAskSources));
+    }
+
+    public static void init(JSONArray arr) throws IOException {
         sourceIntToString = new HashMap<Integer, String>();
         sourceStringToInt = new HashMap<String, Integer>();
         sourcePathToStringID = new HashMap<String, String>();
 
         boolean confInited = false;
         List<IIPEDSource> sources = new ArrayList<IIPEDSource>();
-        JSONArray arr = askSources(urlToAskSources);
         for (Object object : arr) {
             JSONObject jsonobj = (JSONObject) object;
             String id = (String) jsonobj.get("id");
@@ -125,6 +128,9 @@ public class Sources {
         }
         sourceStringToInt.put(id, last);
         sourceIntToString.put(last, id);
+
+        // cached results do not know about the new source
+        Search.clearCache();
 
         return Response.ok().build();
     }

@@ -47,6 +47,7 @@
         <telegram.version>1.0.15</telegram.version>
         <twelvemonkeys.version>3.10.1</twelvemonkeys.version>
         <bencode.version>1.4.1</bencode.version>
+        <javafx.version>11.0.2</javafx.version>
     </properties>
 
     <repositories>
@@ -174,4 +175,54 @@
             </plugin>
         </plugins>
     </reporting>
+    <profiles>
+        <!--
+            IPED is meant to be built with a JDK that bundles JavaFX (e.g. Liberica OpenJDK 11
+            Full JDK), which is detected by the presence of lib/javafx.properties in the JDK.
+            When such a JDK is not available, JavaFX is fetched from Maven instead, so the
+            project still compiles on a plain JDK. The dependencies are 'provided', so nothing
+            changes in the generated release: at runtime JavaFX still comes from the JDK.
+        -->
+        <profile>
+            <id>javafx-from-maven</id>
+            <activation>
+                <file>
+                    <missing>${java.home}/lib/javafx.properties</missing>
+                </file>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-base</artifactId>
+                    <version>${javafx.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-graphics</artifactId>
+                    <version>${javafx.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-controls</artifactId>
+                    <version>${javafx.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-swing</artifactId>
+                    <version>${javafx.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-web</artifactId>
+                    <version>${javafx.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
 </project>

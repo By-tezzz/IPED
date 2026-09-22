@@ -28,11 +28,29 @@ mvn clean install
 ```
 It will generate an snapshot version of IPED in target/release folder.
 
+If your JDK does not bundle JavaFX, it is fetched from Maven at build time, so the build also works on a
+standard JDK 11+. JavaFX is still needed at runtime by the desktop interface.
+
 <b>Attention:</b> the default master branch is the development one and is unstable. If you want to build a stable version, checkout some of the release tags after the clone step.
 
 On Linux you also must build The Sleuthkit and additional dependencies. Please refer to [Linux Section](https://github.com/sepinf-inc/IPED/wiki/Linux)
 
 Contributions are very welcome! Before contributing please refer to [Contributing](https://github.com/lfcnassif/IPED/wiki/Contributing)
+
+## Web interface
+
+A case can also be analyzed in a browser, without installing anything else. After processing a case, run:
+```
+./iped-web.sh --case=/path/to/case
+```
+and open http://localhost:8080/app/ (`iped-web.bat` on Windows).
+
+It supports the same query syntax as the desktop interface, list and gallery views, inline preview of images,
+audio, video, PDF and text, the extracted text and the properties of each item, and checking and bookmarking
+items, with changes written to the case. It is served by IPED's REST API itself, so no other server is needed.
+
+**It has no authentication**: keep it on a trusted network, bind it to `--host=127.0.0.1`, or put it behind an
+authenticating reverse proxy. See [docs/web-interface.md](docs/web-interface.md) for details.
 
 ## Features
 
@@ -74,6 +92,7 @@ Some of IPED several features are listed below:
 - Stable processing with out-of-process file system decoding and file parsing
 - Resuming or restarting stopped or aborted processing (--continue/--restart options)
 - Web API for searching remote cases, get file metadata, raw content, decoded text, thumbnails and posting bookmarks
+- Web interface for case analysis in a browser, built on top of the web API
 - Creation of bookmarks/tags for interesting data
 - HTML, CSV reports and portable cases with tagged data
 
